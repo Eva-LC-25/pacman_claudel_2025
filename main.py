@@ -18,23 +18,23 @@ pyxel.run(update, draw)
 fond = 8
 def update():
     #logique du jeu
-    global pos_player,fond    #Touche flèche droite
-    if pyxel.btn(pyxel.KEY_RIGHT):
-        pos_player[0] += 1
+    #global pos_player,fond    #Touche flèche droite
+    #if pyxel.btn(pyxel.KEY_RIGHT):
+    #    pos_player[0] += 1
     #Touche flèche gauche
-    if pyxel.btn(pyxel.KEY_LEFT):
-        pos_player[0] -= 1
+    #if pyxel.btn(pyxel.KEY_LEFT):
+    #    pos_player[0] -= 1
     #Touche flèche haut
-    if pyxel.btn(pyxel.KEY_UP):
-        pos_player[1] -= 1
+    #if pyxel.btn(pyxel.KEY_UP):
+    #    pos_player[1] -= 1
     #Touche flèche bas
-    if pyxel.btn(pyxel.KEY_DOWN):
-        pos_player[1] += 1
+    #if pyxel.btn(pyxel.KEY_DOWN):
+    #    pos_player[1] += 1
         
 
-def draw():
-    pyxel.cls(fond) #fond
-    pyxel.rect(pos_player[0], pos_player[1], 4, 4, 11)
+#def draw():
+#    pyxel.cls(fond) #fond
+#    pyxel.rect(pos_player[0], pos_player[1], 4, 4, 11)
 #     pyxel.rect(x_carre2, y_carre2, 4, 4, 3)
 pyxel.init(160, 120, title="mon premier jeu")
 pyxel.run(update, draw)
