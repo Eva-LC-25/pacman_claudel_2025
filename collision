@@ -1,0 +1,46 @@
+import pyxel
+import random
+# Dimensions de la fenêtre
+WIDTH = 160
+HEIGHT = 120
+
+LARGEUR_CARRE = 4
+# Position initiale du sprite
+x = 10
+y = 10
+
+def update():
+    global x, y
+
+    dx = 0
+    dy = 0
+    # Déplacement avec les flèches
+
+    if pyxel.btn(pyxel.KEY_RIGHT):
+        dx = 1
+    if pyxel.btn(pyxel.KEY_LEFT):
+        dx = -1
+    if pyxel.btn(pyxel.KEY_DOWN):
+        dy = 1
+    if pyxel.btn(pyxel.KEY_UP):
+        dy = -1
+    # Vérification collision avec la couleur rouge (8)
+    x += dx
+    y += dy
+    if pyxel.pget(x, y) == 8 or pyxel.pget(x + LARGEUR_CARRE - 1, y + LARGEUR_CARRE - 1) == 8:
+        x -= dx
+        y -= dy
+
+    print(x, y)
+        
+
+def draw():
+    pyxel.cls(0)	# Fond noir
+    # Zone rouge (utilisation de rect pour optimiser)
+    pyxel.rect(50, 40, 60, 40, 8)
+    # Sprite bleu
+    pyxel.rect(x, y, LARGEUR_CARRE, LARGEUR_CARRE, 12)
+
+# Initialisation et lancement
+pyxel.init(WIDTH, HEIGHT, title="Collision sans classes")
+pyxel.run(update, draw)
