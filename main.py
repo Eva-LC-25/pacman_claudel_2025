@@ -26,7 +26,7 @@ def update():
     print (x,y)
     
     #collision
-    if pyxel.pget(x, y) == 8 or pyxel.pget(x + LCARRE - 1, y + LCARRE - 1) == 8:
+    if  pyxel.pget(x, y) == 8 or pyxel.pget(x + LCARRE - 1, y) == 8 or pyxel.pget(x, y + LCARRE - 1) == 8 or pyxel.pget(x + LCARRE - 1, y + LCARRE - 1) == 8:
         x -= dx
         y -= dy
     
@@ -45,6 +45,10 @@ def draw():
     pyxel.bltm(0, 0, 0, 0, 0, 128, 128)
     pyxel.rect(x, y, LCARRE, LCARRE, 9)
 #     pyxel.rect(x_carre2, y_carre2, 4, 4, 3)
+    
+pyxel.init(128, 128, title="mon premier jeu")
+pyxel.load("res.pyxres")
+pyxel.run(update, draw)
     
 pyxel.init(128, 128, title="mon premier jeu")
 pyxel.load("res.pyxres")
