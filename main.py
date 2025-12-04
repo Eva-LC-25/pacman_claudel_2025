@@ -56,75 +56,92 @@ pyxel.init(128, 128, title="mon premier jeu")
 pyxel.load("res.pyxres")
 pyxel.run(update, draw)
 
-pygame.init()
+import pyxel
+import random
+import math
 
-longueur, hauteur = 600, 600
-win = pygame.display.set_mode((longueur, hauteur))
-clock = pygame.time.Clock()
+LARGEUR = 200
+HAUTEUR = 200
 
-pacman = pygame.Rect(300, 300, 20, 20)
+# --- Distance entre pacman et fantôme
+def distance(p1, p2):
+    return math.sqrt((p1["x"] - p2["x"])**2 + (p1["y"] - p2["y"])**2)
 
-# Fonction distance
-def distance(r1, r2):
-    return math.sqrt((r1.x - r2.x)**2 + (r1.y - r2.y)**2)
+class Jeu:
+    def __init__(self):
+        pyxel.init(LARGEUR, HAUTEUR, title="Pac-Man Pyxel")
 
-# Création des fantômes
-fantomes = []
-fantome_vitesse = 2
+        # Pac-Man
+        self.pacman = {"x": 100, "y": 100, "size": 8}
 
-for i in range(5):
-    x = random.randint(50, longueur - 50)
-    y = random.randint(50, hauteur - 50)
-    fantomes.append({
-        "rect": pygame.Rect(x, y, 20, 20),
-        "dir": [0, 0],
-        "timer": 0
-    })
+        # Fantômes
+        self.fantome_vitesse = 1
+        self.fantomes = []
 
-running = True
-while running:
-    clock.tick(60)
+        for i in range(5):
+            fx = random.randint(10, LARGEUR - 10)
+            fy = random.randint(10, HAUTEUR - 10)
+            self.fantomes.append({
+                "x": fx,
+                "y": fy,
+                "dir": [0, 0],
+                "timer": 0
+            })
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+        pyxel.run(self.update, self.draw)
 
-    # Déplacement des fantômes
-    for fantome in fantomes:
-        rect = fantome["rect"]
-        d = distance(pacman, rect)
+    def update(self):
+        # --- Déplacement Pac-Man
+        if pyxel.btn(pyxel.KEY_LEFT):
+            self.pacman["x"] -= 1
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.pacman["x"] += 1
+        if pyxel.btn(pyxel.KEY_UP):
+            self.pacman["y"] -= 1
+        if pyxel.btn(pyxel.KEY_DOWN):
+            self.pacman["y"] += 1
 
-        if d < 120:
-            # Fantôme poursuit Pacman
-            if pacman.x > rect.x: rect.x += fantome_vitesse
-            if pacman.x < rect.x: rect.x -= fantome_vitesse
-            if pacman.y > rect.y: rect.y += fantome_vitesse
-            if pacman.y < rect.y: rect.y -= fantome_vitesse
+        # Limites écran
+        self.pacman["x"] = max(0, min(self.pacman["x"], LARGEUR))
+        self.pacman["y"] = max(0, min(self.pacman["y"], HAUTEUR))
 
-        else:
-            # Déplacement aléatoire
-            if fantome["timer"] == 0:
-                fantome["dir"] = [
-                    random.choice([-1, 0, 1]),
-                    random.choice([-1, 0, 1])
-                ]
-                fantome["timer"] = 20
+        # --- IA des fantômes
+        for f in self.fantomes:
+            d = distance(self.pacman, f)
 
-            rect.x += fantome["dir"][0] * fantome_vitesse
-            rect.y += fantome["dir"][1] * fantome_vitesse
-            fantome["timer"] -= 1
+            if d < 40:  # Détection
+                if self.pacman["x"] > f["x"]:
+                    f["x"] += self.fantome_vitesse
+                if self.pacman["x"] < f["x"]:
+                    f["x"] -= self.fantome_vitesse
+                if self.pacman["y"] > f["y"]:
+                    f["y"] += self.fantome_vitesse
+                if self.pacman["y"] < f["y"]:
+                    f["y"] -= self.fantome_vitesse
 
-        # Empêcher les fantômes de sortir de l'écran
-        rect.x = max(0, min(longueur - 20, rect.x))
-        rect.y = max(0, min(hauteur - 20, rect.y))
+            else:
+                # Déplacement aléatoire
+                if f["timer"] <= 0:
+                    f["dir"] = [
+                        random.choice([-1, 0, 1]),
+                        random.choice([-1, 0, 1])
+                    ]
+                    f["timer"] = 20
 
-    # Affichage
-    win.fill((0, 0, 0))
+                f["x"] += f["dir"][0] * self.fantome_vitesse
+                f["y"] += f["dir"][1] * self.fantome_vitesse
+                f["timer"] -= 1
 
-    pygame.draw.rect(win, (255, 255, 0), pacman)
-    for fantome in fantomes:
-        pygame.draw.rect(win, (255, 0, 0), fantome["rect"])
+                # Reste dans la fenêtre
+                f["x"] = max(0, min(f["x"], LARGEUR))
+                f["y"] = max(0, min(f["y"], HAUTEUR))
 
-    pygame.display.update()
+    def draw(self):
+        pyxel.cls(0)
 
-pygame.quit()
+        # Pac-Man (jaune)
+        pyxel.rect(self.pacman["x"], self.pacman["y"], self.pacman["size"], self.pacman["size"], 10)
+
+        # Fantômes (rouges)
+        for f in self.fantomes:
+            pyxel.rect(f["x"], f["y"], 8, 8, 8)
