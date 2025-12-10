@@ -1,0 +1,3 @@
+# Pyxel Studio
+
+import pyxel
