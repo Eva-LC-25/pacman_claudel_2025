@@ -1,0 +1,42 @@
+def gmov(posghost, g1wp, gwpindex):
+    ghostdest = g1wp[gwpindex]
+    if posghost[0] < ghostdest[0]:
+        posghost[0] += 2
+    if posghost[1] < ghostdest[1]:
+        posghost[1] += 2
+    if posghost[0] > ghostdest[0]:
+        posghost[0] -= 2
+    if posghost[1] > ghostdest[1]:
+        posghost[1] -= 2
+        
+    if abs(posghost[0] - ghostdest[0]) < 2 and abs(posghost[1] - ghostdest[1]) < 2:
+        gwpindex += 1
+        if gwpindex >= len(g1wp):
+            gwpindex = 0
+            
+    return posghost, gwpindex
+
+
+def ghostlist():
+    
+    tleft = (3,3)
+    tright = (121,3)
+    bleft = (3,121)
+    bright = (121,121)
+    
+    start_pos = tleft
+    
+    wpoint = [tleft,tright,bright,bleft]
+    
+    return wpoint
+
+def ghostlist2():
+    
+    start_pos = (26,26)
+    wpoint = [[26,26],[26,50],[34,50],[34,74],[26,74],[26,98],[98,98],[98,74],[90,74],[90,50],[98,50],[98,26],[26,26]]
+    
+    return wpoint
+
+def ghostlist3():
+    wpoint = [[120,74],[3,74],[3,50],[120,50],[120,74]]
+    return wpoint
