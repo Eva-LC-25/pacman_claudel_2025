@@ -1,0 +1,20 @@
+import pyxel
+def perimeter(x,y,c):
+    collision = 0
+    if(
+        pyxel.pget(x, y) == c or
+        pyxel.pget(x + 1, y) == c or
+        pyxel.pget(x + 2, y) == c or
+        pyxel.pget(x + 3, y) == c or
+        pyxel.pget(x + 3, y + 1) == c or
+        pyxel.pget(x + 3, y + 2) == c or
+        pyxel.pget(x + 3, y + 3) == c or
+        pyxel.pget(x + 2, y + 3) == c or
+        pyxel.pget(x + 1, y + 3) == c or
+        pyxel.pget(x, y + 3) == c or
+        pyxel.pget(x, y + 2) == c or
+        pyxel.pget(x, y + 1) == c
+    ):
+        collision = 1
+        
+    return collision
