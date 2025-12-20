@@ -1,0 +1,154 @@
+import pyxel
+import random
+import masterlist
+import math
+import per
+import ghostlist
+
+pos_player = [76, 56]
+x= 56
+y= 70
+LP=2
+pointsycord = [4,51,75,122]
+LCARRE = 4
+pcolor = 9
+
+pointslist = masterlist.masterl()
+
+score = 0
+life = 3
+endgame = 0
+
+#ghost 1
+posghost = [3,3]
+gwpindex = 0
+g1wp = ghostlist.ghostlist()
+gcolor = 12
+
+#ghost 2
+gwpindex2 = 0
+g2wp = ghostlist.ghostlist2()
+posghost2 = g2wp[0]
+gcolor2 = 3
+
+#ghost 3
+gwpindex3 = 0
+g3wp = ghostlist.ghostlist3()
+posghost3 = g3wp[0]
+gcolor3 = 10
+
+safemode = 0
+
+
+def update():
+    
+    #logique du jeu
+    global pos_player,endgame,x,y,score,gwpindex,life,gcolor,safemode,safemodetimer,pcolor,posghost,gwpindex2,g2wp,posghost2,gwpindex3,g3wp,posghost3
+    dx = 0
+    dy = 0
+    
+    #deplacement avec les fleches
+    if pyxel.btn(pyxel.KEY_RIGHT):
+        dx = 1
+    if pyxel.btn(pyxel.KEY_LEFT):
+        dx = -1
+    if pyxel.btn(pyxel.KEY_UP):
+        dy = -1
+    if pyxel.btn(pyxel.KEY_DOWN):
+        dy = 1
+    x+=dx
+    y+=dy
+    print (x,y)
+    
+    #collision
+    if (per.perimeter(x,y,8)):
+        x -= dx
+        y -= dy
+    
+    if pyxel.btnp(pyxel.KEY_Q):
+        pyxel.quit()
+    
+    #teleporting function
+    if x <= -3 and y in range (56,69):
+        x = 127
+    if x >= 128 and y in range (56,69):
+        x = -2
+
+    #collisions with points
+    if (per.perimeter(x,y,7)):
+        for point in pointslist:
+            pointx = point[0]
+            pointy = point[1]
+            
+            if abs(pointx-x) < 4 and abs(pointy-y) < 4:
+                point[2] = 0
+                score +=1
+    
+    #ghosts
+    posghost, gwpindex = ghostlist.gmov(posghost,g1wp,gwpindex)
+    posghost2, gwpindex2 = ghostlist.gmov(posghost2,g2wp,gwpindex2)
+    posghost3, gwpindex3 = ghostlist.gmov(posghost3,g3wp,gwpindex3)
+    
+    
+    #ghost collision
+    if safemode == 0:
+        if (per.perimeter(x,y,gcolor)) or (per.perimeter(x,y,gcolor2)) or (per.perimeter(x,y,gcolor3)):
+            life -= 1
+            safemode = 1
+            safemodetimer = 100
+        if life == 0:
+            endgame = 1
+    
+    #safemode
+    if safemode > 0:
+        safemodetimer -=1
+        if safemodetimer < 0:
+            safemode = 0
+        
+
+def draw():
+    pyxel.cls(0)
+    pyxel.bltm(0, 0, 0, 0, 0, 128, 128)
+    
+    
+    #points
+    for point in pointslist:
+        xi = point[0]
+        yi = point[1]
+        alive = point[2]
+        if alive == 1:
+            pyxel.rect(xi,yi,LP,LP,7)
+    
+    #flickering
+    col = pcolor
+    if safemode > 0:
+        if (pyxel.frame_count // 10) % 2 == 0:
+            col = 9
+        else:
+            col = 0
+    
+    pyxel.rect(x,y,LCARRE,LCARRE,col)
+    
+    #text on the map
+    string = ""
+    for ii in range(life):
+        string += "+"
+    pyxel.text(59,13,str(score),7)
+    pyxel.text(15,65,string,8)
+    pyxel.text(13,60,"VIES",0)
+    #ghost
+    pyxel.rect(posghost[0],posghost[1], LCARRE, LCARRE, gcolor)
+    pyxel.rect(posghost2[0],posghost2[1],LCARRE,LCARRE,gcolor2)
+    pyxel.rect(posghost3[0],posghost3[1],LCARRE,LCARRE,gcolor3)
+
+    if endgame == 1:
+        pyxel.rect(0,0,128,128,0)
+        pyxel.text(40,64,"GAME OVER",7)
+        pyxel.text(40,84,"Q TO QUIT",7)
+    if score == 123:
+        pyxel.rect(0,0,128,128,0)
+        pyxel.text(35,64,"VOUS ETES LE CHAMPION",7)
+
+pyxel.init(128, 128, title="mon premier jeu")
+pyxel.load("res.pyxres")
+pyxel.run(update, draw)
