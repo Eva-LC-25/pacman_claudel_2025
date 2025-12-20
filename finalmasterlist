@@ -1,0 +1,26 @@
+def masterl():
+    ym = [4,51,75,122]
+    xm = range(9,121,7)
+    xl = [4,121]
+    yl = range(4,125,7)
+    yh = [27,99]
+    xh = range(27,98,7)
+    points = []
+    
+    
+    for yi in ym:
+        for xi in xm:
+            this_point = [xi, yi, 1]
+            points.append(this_point)
+            
+    for yi in yl:
+        for xi in xl:
+            this_point = [xi, yi, 1]
+            points.append(this_point)
+            
+    for yi in yh:
+        for xi in xh:
+            this_point = [xi, yi, 1]
+            points.append(this_point)
+            
+    return points
